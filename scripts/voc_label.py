@@ -5,9 +5,11 @@ from os import listdir, getcwd
 from os.path import join
 
 sets=[('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
+sets=[('2012', 'train'), ('2012', 'val')]
 
 classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
+classes = ["bicycle","bird"]
 
 def convert(size, box):
     dw = 1./(size[0])
