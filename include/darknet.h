@@ -1054,6 +1054,11 @@ LIB_API int network_width(network *net);
 LIB_API int network_height(network *net);
 LIB_API void optimize_picture(network *net, image orig, int max_layer, float scale, float rate, float thresh, int norm);
 
+//gwf
+typedef void(*TrainCallback)(float avg_loss, float max_img_loss, int iteration, int net_max_batches, void* user);
+LIB_API void set_train_callback(TrainCallback callback, void* user);
+
+
 // image.h
 LIB_API void make_image_red(image im);
 LIB_API image make_attention_image(int img_size, float *original_delta_cpu, float *original_input_cpu, int w, int h, int c, float alpha);
