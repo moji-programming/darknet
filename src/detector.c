@@ -23,6 +23,14 @@ int check_mistakes = 0;
 
 static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90 };
 
+static TrainCallback cb_train = NULL;
+static void* cb_train_user = NULL;
+void set_train_callback(TrainCallback callback, void* user)
+{
+    cb_train = callback;
+    cb_train_user = user;
+}
+
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, float thresh, float iou_thresh, int mjpeg_port, int show_imgs, int benchmark_layers, char* chart_path)
 {
     list *options = read_data_cfg(datacfg);
@@ -387,6 +395,9 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             printf("  avg_contrastive_acc = %f \n", avg_contrastive_acc);
         }
         draw_train_loss(windows_name, img, img_size, avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, draw_precision, "mAP%", avg_contrastive_acc / 100, dont_show, mjpeg_port, avg_time);
+        if (cb_train) {
+            cb_train(avg_loss, max_img_loss, iteration, net.max_batches, cb_train_user);
+        }
 #endif    // OPENCV
 
         //if (i % 1000 == 0 || (i < 1000 && i % 100 == 0)) {
