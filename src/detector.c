@@ -388,7 +388,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
                 sprintf(buff, "%s/%s_best.weights", backup_directory, base);
                 save_weights(net, buff);
                 if (cb_weight)
-                    cb_weight(&buffer, mean_average_precision, cb_weight_user);
+                    cb_weight(buff, mean_average_precision, cb_weight_user);
             }
 
             draw_precision = 1;
