@@ -25,10 +25,19 @@ static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,
 
 static TrainCallback cb_train = NULL;
 static void* cb_train_user = NULL;
+static WeightCallback cb_weight = NULL;
+static void* cb_weight_user = NULL;
+
 void set_train_callback(TrainCallback callback, void* user)
 {
     cb_train = callback;
     cb_train_user = user;
+}
+
+void set_weight_callback(WeightCallback callback, void* user)
+{
+    cb_weight = callback;
+    cb_weight_user = user;
 }
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, float thresh, float iou_thresh, int mjpeg_port, int show_imgs, int benchmark_layers, char* chart_path)
@@ -378,6 +387,8 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
                 char buff[256];
                 sprintf(buff, "%s/%s_best.weights", backup_directory, base);
                 save_weights(net, buff);
+                if (cb_weight)
+                    cb_weight(&buffer, mean_average_precision, cb_weight_user);
             }
 
             draw_precision = 1;
@@ -396,7 +407,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
         }
         draw_train_loss(windows_name, img, img_size, avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, draw_precision, "mAP%", avg_contrastive_acc / 100, dont_show, mjpeg_port, avg_time);
         if (cb_train) {
-            cb_train(avg_loss, max_img_loss, iteration, net.max_batches, cb_train_user);
+            cb_train(avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, cb_train_user);
         }
 #endif    // OPENCV
 
