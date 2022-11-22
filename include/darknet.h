@@ -1059,6 +1059,8 @@ typedef void(*TrainCallback)(float avg_loss, float max_img_loss, int iteration, 
 typedef void(*WeightCallback)(char* path, float mAp, void* user);
 LIB_API void set_train_callback(TrainCallback callback, void* user);
 LIB_API void set_weight_callback(WeightCallback callback, void* user);
+LIB_API int get_device_count();
+
 
 // image.h
 LIB_API void make_image_red(image im);
