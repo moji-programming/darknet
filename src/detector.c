@@ -27,6 +27,7 @@ static TrainCallback cb_train = NULL;
 static void* cb_train_user = NULL;
 static WeightCallback cb_weight = NULL;
 static void* cb_weight_user = NULL;
+static bool train_stop = false;
 
 void set_train_callback(TrainCallback callback, void* user)
 {
@@ -38,6 +39,11 @@ void set_weight_callback(WeightCallback callback, void* user)
 {
     cb_weight = callback;
     cb_weight_user = user;
+}
+
+void set_train_stop(int stop)
+{
+    train_stop = stop;
 }
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, float thresh, float iou_thresh, int mjpeg_port, int show_imgs, int benchmark_layers, char* chart_path)
@@ -209,6 +215,8 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
 
     //while(i*imgs < N*120){
     while (get_current_iteration(net) < net.max_batches) {
+        if (train_stop)
+            break;
         if (l.random && count++ % 10 == 0) {
             float rand_coef = 1.4;
             if (l.random != 1.0) rand_coef = l.random;
@@ -420,9 +428,9 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
 #ifdef GPU
             if (ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
-            char buff[256];
+            /*gwf char buff[256];
             sprintf(buff, "%s/%s_%d.weights", backup_directory, base, iteration);
-            save_weights(net, buff);
+            save_weights(net, buff);*/
         }
 
         if (iteration >= (iter_save_last + 100) || (iteration % 100 == 0 && iteration > 1)) {
@@ -431,10 +439,8 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             if (ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
             char buff[256];
-            sprintf(buff, "%s/%s_last.weights", backup_directory, base);
-            save_weights(net, buff);
-            if (cb_weight)//gwf
-                cb_weight(buff, mean_average_precision, cb_weight_user);
+            //gwfsprintf(buff, "%s/%s_last.weights", backup_directory, base);
+            //save_weights(net, buff);
 
             if (net.ema_alpha && is_ema_initialized(net)) {
                 sprintf(buff, "%s/%s_ema.weights", backup_directory, base);
