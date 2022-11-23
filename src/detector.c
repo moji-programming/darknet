@@ -343,7 +343,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
         fflush(stdout);
 
         int draw_precision = 0;
-        if (calc_map && (iteration >= next_map_calc || iteration == net.max_batches)) {
+        if (calc_map && (iteration >= next_map_calc || iteration == net.max_batches)) {        
             if (l.random) {
                 printf("Resizing to initial size: %d x %d ", init_w, init_h);
                 args.w = init_w;
@@ -433,6 +433,8 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             char buff[256];
             sprintf(buff, "%s/%s_last.weights", backup_directory, base);
             save_weights(net, buff);
+            if (cb_weight)//gwf
+                cb_weight(buff, mean_average_precision, cb_weight_user);
 
             if (net.ema_alpha && is_ema_initialized(net)) {
                 sprintf(buff, "%s/%s_ema.weights", backup_directory, base);
