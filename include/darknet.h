@@ -1056,7 +1056,7 @@ LIB_API void optimize_picture(network *net, image orig, int max_layer, float sca
 
 //gwf
 typedef void(*TrainCallback)(float avg_loss, float max_img_loss, int iteration, int net_max_batches, float mean_average_precision, void* user);
-typedef void(*WeightCallback)(char* path, float mAp, void* user);
+typedef void(*WeightCallback)(int iteration, char* path, float mAp, void* user);
 LIB_API void set_train_callback(TrainCallback callback, void* user);
 LIB_API void set_weight_callback(WeightCallback callback, void* user);
 LIB_API void set_train_stop(int stop);
