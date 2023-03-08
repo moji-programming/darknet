@@ -23,6 +23,7 @@ int check_mistakes = 0;
 
 static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90 };
 
+//gwf
 static TrainCallback cb_train = NULL;
 static void* cb_train_user = NULL;
 static WeightCallback cb_weight = NULL;
@@ -195,7 +196,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
     int img_size = 1000;
     char windows_name[100];
     sprintf(windows_name, "chart_%s.png", base);
-    img = draw_train_chart(windows_name, max_img_loss, net.max_batches, number_of_lines, img_size, dont_show, chart_path);
+    //img = draw_train_chart(windows_name, max_img_loss, net.max_batches, number_of_lines, img_size, dont_show, chart_path);
 #endif    //OPENCV
     if (net.contrastive && args.threads > net.batch/2) args.threads = net.batch / 2;
     if (net.track) {
@@ -413,7 +414,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             if (cur_con_acc >= 0) avg_contrastive_acc = avg_contrastive_acc*0.99 + cur_con_acc * 0.01;
             printf("  avg_contrastive_acc = %f \n", avg_contrastive_acc);
         }
-        draw_train_loss(windows_name, img, img_size, avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, draw_precision, "mAP%", avg_contrastive_acc / 100, dont_show, mjpeg_port, avg_time);
+        //gwfdraw_train_loss(windows_name, img, img_size, avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, draw_precision, "mAP%", avg_contrastive_acc / 100, dont_show, mjpeg_port, avg_time);
         if (cb_train) {
             cb_train(avg_loss, max_img_loss, iteration, net.max_batches, mean_average_precision, cb_train_user);
         }
@@ -456,11 +457,13 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
     char buff[256];
     sprintf(buff, "%s/%s_final.weights", backup_directory, base);
     save_weights(net, buff);
+    if (cb_weight)
+        cb_weight(net.max_batches, buff, mean_average_precision, cb_weight_user);
     printf("If you want to train from the beginning, then use flag in the end of training command: -clear \n");
 
 #ifdef OPENCV
-    release_mat(&img);
-    destroy_all_windows_cv();
+    //gwf release_mat(&img);
+    //gwf destroy_all_windows_cv();
 #endif
 
     // free memory
